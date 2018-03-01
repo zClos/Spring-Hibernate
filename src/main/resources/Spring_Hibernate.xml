@@ -12,6 +12,7 @@
                            http://www.springframework.org/schema/tx/spring-tx.xsd">
 
     <context:property-placeholder location="classpath*:/db/db.properties"/>
+    <context:component-scan base-package="com.pvt"/>
 
     <!--Data access-->
     <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
@@ -21,40 +22,28 @@
         <property name="password" value="${db.password}"/>
     </bean>
 
-    <!--Hibernate config-->
-    <bean id="hibernate3SessionFactory" class="org.springframework.orm.hibernate3.LocalSessionFactoryBean">
+    <!--EntityManagerFactory-->
+    <bean name="vendorAdapter" class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter" p:database="MYSQL"/>
+    <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
         <property name="dataSource" ref="dataSource"/>
-        <property name="mappingResources">
-            <list>
-                <value>com/pvt/pojos/department.hbm.xml</value>
-                <value>com/pvt/pojos/employee.hbm.xml</value>
-                <value>com/pvt/pojos/emp_detail.hbm.xml</value>
-                <value>com/pvt/pojos/meeting.hbm.xml</value>
-            </list>
+        <property name="jpaVendorAdapter" ref="vendorAdapter">
         </property>
-        <property name="hibernateProperties">
+        <property name="packagesToScan" value="com.pvt.pojos"/>
+        <property name="jpaProperties">
             <props>
                 <prop key="hibernate.hbm2ddl.auto">create</prop>
                 <prop key="hibernate.show_sql">true</prop>
                 <prop key="hibernate.bytecode.use_reflection_optimizer">true</prop>
                 <prop key="hibernate.dialect">org.hibernate.dialect.MySQL5Dialect</prop>
-                <prop key="hibernate.connection.autocommit">true</prop>
+                <prop key="hibernate.connection.autocommit">false</prop>
             </props>
         </property>
     </bean>
 
     <!--Transaction manager bean and Spring AOP config-->
-    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager"
+    <bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager"
           p:dataSource-ref="dataSource"/>
     <tx:annotation-driven transaction-manager="transactionManager"/>
-
-    <!--Configure DAO beans-->
-    <bean id="baseDao" class="com.pvt.dao.impl.BaseDaoImpl" p:sessionFactory-ref="hibernate3SessionFactory"/>
-    <bean id="departmentDao" class="com.pvt.dao.impl.DepartmentDaoImpl" parent="baseDao"/>
-    <bean id="employeeDao" class="com.pvt.dao.impl.EmployeeDaoImpl" parent="baseDao"/>
-    <bean id="employeeDetailDao" class="com.pvt.dao.impl.EmployeeDetailDaoImpl" parent="baseDao"/>
-    <bean id="meetingDao" class="com.pvt.dao.impl.MeetingDaoImpl" parent="baseDao"/>
-
 
     <!--Configure beans to fill data base-->
     <bean id="department" class="com.pvt.pojos.Department"
@@ -62,46 +51,27 @@
         <property name="employees">
             <list value-type="com.pvt.pojos.Employee">
                 <ref bean="employee1"/>
-                <ref bean="employee2"/>
             </list>
         </property>
     </bean>
 
     <bean id="employee1" class="com.pvt.pojos.Employee"
-          p:firstName="Vasia" p:lastName="Pupkin" p:employeeDetail-ref="employeeDetail1" autowire="byType">
+          p:firstName="Vasia" p:lastName="Pupkin" p:employeeDetail-ref="employeeDetail1">
         <property name="meetings">
             <set>
                 <ref bean="meeting1"/>
-                <ref bean="meeting2"/>
             </set>
         </property>
-    </bean>
-    <bean id="employee2" class="com.pvt.pojos.Employee"
-          p:firstName="Ivan" p:lastName="Ivanov" p:employeeDetail-ref="employeeDetail2" autowire="byType">
-        <property name="meetings">
-            <set>
-                <ref bean="meeting2"/>
-            </set>
-        </property>
+        <property name="department" ref="department"/>
     </bean>
 
     <bean id="employeeDetail1" class="com.pvt.pojos.EmployeeDetail"
           p:employee-ref="employee1" p:country="Belarus" p:city="Minsk"/>
-    <bean id="employeeDetail2" class="com.pvt.pojos.EmployeeDetail"
-          p:employee-ref="employee2" p:country="Belarus" p:city="Vitebsk"/>
 
     <bean id="meeting1" class="com.pvt.pojos.Meeting" p:subject="Meeting #1">
         <property name="employees">
             <list value-type="com.pvt.pojos.Employee">
                 <ref bean="employee1"/>
-                <ref bean="employee2"/>
-            </list>
-        </property>
-    </bean>
-    <bean id="meeting2" class="com.pvt.pojos.Meeting" p:subject="Meeting #2">
-        <property name="employees">
-            <list value-type="com.pvt.pojos.Employee">
-                <ref bean="employee2"/>
             </list>
         </property>
     </bean>
