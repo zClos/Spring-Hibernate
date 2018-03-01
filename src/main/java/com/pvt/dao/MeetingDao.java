@@ -1,6 +1,9 @@
 package com.pvt.dao;
 
 import com.pvt.pojos.Meeting;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
 
-public interface MeetingDao extends BaseDao<Meeting> {
+@Repository
+public interface MeetingDao extends CrudRepository<Meeting, Integer> {
 }

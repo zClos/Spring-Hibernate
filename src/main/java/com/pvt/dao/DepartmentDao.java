@@ -1,9 +1,12 @@
 package com.pvt.dao;
 
 import com.pvt.pojos.Department;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
 
-public interface DepartmentDao extends BaseDao<Department> {
+@Repository
+public interface DepartmentDao extends CrudRepository<Department, Integer> {
 
-    Department getDepartmentByName(String name);
+    Department findByName(String name);
 
 }

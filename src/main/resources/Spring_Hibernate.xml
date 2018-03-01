@@ -4,12 +4,15 @@
        xmlns="http://www.springframework.org/schema/beans"
        xmlns:context="http://www.springframework.org/schema/context"
        xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:jpa="http://www.springframework.org/schema/data/jpa"
        xsi:schemaLocation="http://www.springframework.org/schema/beans
                            http://www.springframework.org/schema/beans/spring-beans.xsd
                            http://www.springframework.org/schema/context
                            http://www.springframework.org/schema/context/spring-context.xsd
                            http://www.springframework.org/schema/tx
-                           http://www.springframework.org/schema/tx/spring-tx.xsd">
+                           http://www.springframework.org/schema/tx/spring-tx.xsd
+                           http://www.springframework.org/schema/data/jpa
+                           http://www.springframework.org/schema/data/jpa/spring-jpa.xsd">
 
     <context:property-placeholder location="classpath*:/db/db.properties"/>
     <context:component-scan base-package="com.pvt"/>
@@ -45,6 +48,9 @@
           p:dataSource-ref="dataSource"/>
     <tx:annotation-driven transaction-manager="transactionManager"/>
 
+    <!--Configure DAO repositories-->
+    <jpa:repositories base-package="com.pvt.dao"/>
+
     <!--Configure beans to fill data base-->
     <bean id="department" class="com.pvt.pojos.Department"
           p:name="someDep">
@@ -75,10 +81,5 @@
             </list>
         </property>
     </bean>
-
-    <bean id="departmentService" class="com.pvt.service.DepartmentService" autowire="constructor"/>
-    <bean id="employeeService" class="com.pvt.service.EmployeeService" autowire="constructor"/>
-    <bean id="employeeDetailService" class="com.pvt.service.EmployeeDetailService" autowire="constructor"/>
-    <bean id="meetingService" class="com.pvt.service.MeetingService" autowire="constructor"/>
 
 </beans>

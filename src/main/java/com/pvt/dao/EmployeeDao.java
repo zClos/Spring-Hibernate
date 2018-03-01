@@ -1,17 +1,23 @@
 package com.pvt.dao;
 
 import com.pvt.pojos.Employee;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-public interface EmployeeDao extends BaseDao<Employee> {
+@Repository
+public interface EmployeeDao extends CrudRepository<Employee, Integer> {
 
-    List<Employee> getEmployeesByFirstName(String firstName);
+    List<Employee> getByFirstName(String firstName);
 
-    List<Employee> getEmployeesByLastName(String lastName);
+    List<Employee> getByLastName(String lastName);
 
-    List<Employee> getEmployeesByFullName(String firstName, String lastName);
+    @Modifying
+    @Query("SELECT e FROM Employee e WHERE e.firstName = ?1 AND e.lastName = ?2")
+    List<Employee> getByFullName(String firstName, String lastName);
 
     List<Employee> getEmployeesByDepartment(String depName);
-
 }
