@@ -3,12 +3,12 @@
        xmlns:p="http://www.springframework.org/schema/p"
        xmlns="http://www.springframework.org/schema/beans"
        xmlns:context="http://www.springframework.org/schema/context"
-       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.springframework.org/schema/tx"
        xsi:schemaLocation="http://www.springframework.org/schema/beans
                            http://www.springframework.org/schema/beans/spring-beans.xsd
                            http://www.springframework.org/schema/context
                            http://www.springframework.org/schema/context/spring-context.xsd
-                           http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd">
+                           http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
 
     <context:property-placeholder location="classpath*:/db/db.properties"/>
 
@@ -45,29 +45,18 @@
     <!--Transaction manager bean and Spring AOP config-->
     <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager"
           p:dataSource-ref="dataSource"/>
-    <bean id="transactionAspectBean" class="com.pvt.aspect.ServiceTransactionAspect" autowire="byType"/>
     <aop:aspectj-autoproxy/>
+    <tx:advice id="transactionAdvice" transaction-manager="transactionManager">
+        <tx:attributes>
+            <tx:method name="get*" read-only="true"/>
+            <tx:method name="*" rollback-for="Throwable"/>
+        </tx:attributes>
+    </tx:advice>
     <aop:config>
-        <aop:pointcut id="saveDepartment"
-                      expression="execution(* com.pvt.service.DepartmentService.saveDepartment(..))"/>
-        <aop:pointcut id="deleteDepartment"
-                      expression="execution(* com.pvt.service.DepartmentService.deleteDepartment(..))"/>
-        <aop:pointcut id="saveEmployee" expression="execution(* com.pvt.service.EmployeeService.saveEmployee(..))"/>
-        <aop:pointcut id="deleteEmployee" expression="execution(* com.pvt.service.EmployeeService.deleteEmployee(..))"/>
-        <aop:pointcut id="saveMeeting" expression="execution(* com.pvt.service.MeetingService.saveMeeting(..))"/>
-        <aop:pointcut id="deleteMeeting" expression="execution(* com.pvt.service.MeetingService.deleteMeeting(..))"/>
-        <aop:pointcut id="deleteEmployeeDetail"
-                      expression="execution(* com.pvt.service.EmployeeDetailService.deleteEmployeeDetail(..))"/>
-
-        <aop:aspect id="transactionService" ref="transactionAspectBean">
-            <aop:around method="saveAround" pointcut-ref="saveDepartment"/>
-            <aop:around method="saveAround" pointcut-ref="saveEmployee"/>
-            <aop:around method="saveAround" pointcut-ref="saveMeeting"/>
-            <aop:around method="deleteAround" pointcut-ref="deleteDepartment"/>
-            <aop:around method="deleteAround" pointcut-ref="deleteEmployee"/>
-            <aop:around method="deleteAround" pointcut-ref="deleteEmployeeDetail"/>
-            <aop:around method="deleteAround" pointcut-ref="deleteMeeting"/>
-        </aop:aspect>
+        <aop:pointcut id="saveAspect" expression="execution(* com.pvt.service.*.save*(..))"/>
+        <aop:pointcut id="deleteAspect" expression="execution(* com.pvt.service.*.delete*(..))"/>
+        <aop:advisor advice-ref="transactionAdvice" pointcut-ref="saveAspect"/>
+        <aop:advisor advice-ref="transactionAdvice" pointcut-ref="deleteAspect"/>
     </aop:config>
 
     <!--Configure DAO beans-->
