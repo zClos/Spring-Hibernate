@@ -12,8 +12,8 @@
         <property name="lastName" column="lastname" type="java.lang.String"/>
         <property name="cellphone" column="cellphone" type="java.lang.String"/>
         <property name="idx" column="idx" type="java.lang.Integer"/>
-        <one-to-one name="employeeDetail" class="com.pvt.pojos.EmployeeDetail" cascade="all"/>
-        <set name="meetings" table="employee_meeting" inverse="false" fetch="select" lazy="true" cascade="all">
+        <one-to-one name="employeeDetail" class="com.pvt.pojos.EmployeeDetail" cascade="save-update"/>
+        <set name="meetings" table="employee_meeting" inverse="false" fetch="select" lazy="true" cascade="save-update">
             <key column="employee_id"/>
             <many-to-many column="meeting_id" class="com.pvt.pojos.Meeting"/>
         </set>
