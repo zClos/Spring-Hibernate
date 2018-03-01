@@ -2,6 +2,7 @@ package com.pvt.service;
 
 import com.pvt.dao.EmployeeDao;
 import com.pvt.pojos.Employee;
+import org.springframework.util.Assert;
 
 public class EmployeeService {
 
@@ -23,6 +24,7 @@ public class EmployeeService {
     }
 
     public void deleteEmployee(Employee employee) {
+        Assert.notNull(employee, "Employee can't be null");
         employeeDao.delete(employee);
     }
 }
