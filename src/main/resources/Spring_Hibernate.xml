@@ -3,7 +3,12 @@
        xmlns:p="http://www.springframework.org/schema/p"
        xmlns="http://www.springframework.org/schema/beans"
        xmlns:context="http://www.springframework.org/schema/context"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans.xsd
+                           http://www.springframework.org/schema/context
+                           http://www.springframework.org/schema/context/spring-context.xsd
+                           http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd">
 
     <context:property-placeholder location="classpath*:/db/db.properties"/>
 
@@ -37,10 +42,39 @@
         </property>
     </bean>
 
+    <!--Transaction manager bean and Spring AOP config-->
+    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager"
+          p:dataSource-ref="dataSource"/>
+    <bean id="transactionAspectBean" class="com.pvt.aspect.ServiceTransactionAspect" autowire="byType"/>
+    <aop:aspectj-autoproxy/>
+    <aop:config>
+        <aop:pointcut id="saveDepartment"
+                      expression="execution(* com.pvt.service.DepartmentService.saveDepartment(..))"/>
+        <aop:pointcut id="deleteDepartment"
+                      expression="execution(* com.pvt.service.DepartmentService.deleteDepartment(..))"/>
+        <aop:pointcut id="saveEmployee" expression="execution(* com.pvt.service.EmployeeService.saveEmployee(..))"/>
+        <aop:pointcut id="deleteEmployee" expression="execution(* com.pvt.service.EmployeeService.deleteEmployee(..))"/>
+        <aop:pointcut id="saveMeeting" expression="execution(* com.pvt.service.MeetingService.saveMeeting(..))"/>
+        <aop:pointcut id="deleteMeeting" expression="execution(* com.pvt.service.MeetingService.deleteMeeting(..))"/>
+        <aop:pointcut id="deleteEmployeeDetail"
+                      expression="execution(* com.pvt.service.EmployeeDetailService.deleteEmployeeDetail(..))"/>
+
+        <aop:aspect id="transactionService" ref="transactionAspectBean">
+            <aop:around method="saveAround" pointcut-ref="saveDepartment"/>
+            <aop:around method="saveAround" pointcut-ref="saveEmployee"/>
+            <aop:around method="saveAround" pointcut-ref="saveMeeting"/>
+            <aop:around method="deleteAround" pointcut-ref="deleteDepartment"/>
+            <aop:around method="deleteAround" pointcut-ref="deleteEmployee"/>
+            <aop:around method="deleteAround" pointcut-ref="deleteEmployeeDetail"/>
+            <aop:around method="deleteAround" pointcut-ref="deleteMeeting"/>
+        </aop:aspect>
+    </aop:config>
+
     <!--Configure DAO beans-->
     <bean id="baseDao" class="com.pvt.dao.impl.BaseDaoImpl" p:sessionFactory-ref="hibernate3SessionFactory"/>
     <bean id="departmentDao" class="com.pvt.dao.impl.DepartmentDaoImpl" parent="baseDao"/>
     <bean id="employeeDao" class="com.pvt.dao.impl.EmployeeDaoImpl" parent="baseDao"/>
+    <bean id="employeeDetailDao" class="com.pvt.dao.impl.EmployeeDetailDaoImpl" parent="baseDao"/>
     <bean id="meetingDao" class="com.pvt.dao.impl.MeetingDaoImpl" parent="baseDao"/>
 
 
@@ -96,6 +130,7 @@
 
     <bean id="departmentService" class="com.pvt.service.DepartmentService" autowire="constructor"/>
     <bean id="employeeService" class="com.pvt.service.EmployeeService" autowire="constructor"/>
+    <bean id="employeeDetailService" class="com.pvt.service.EmployeeDetailService" autowire="constructor"/>
     <bean id="meetingService" class="com.pvt.service.MeetingService" autowire="constructor"/>
 
 </beans>
