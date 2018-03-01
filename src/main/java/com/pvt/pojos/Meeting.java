@@ -1,8 +1,11 @@
 package com.pvt.pojos;
 
+import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
 
+@Entity
+@Table(name = "meeting")
 public class Meeting {
 
     private Integer meetingId;
@@ -13,6 +16,9 @@ public class Meeting {
         employees = new HashSet<>();
     }
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "meeting_id")
     public Integer getMeetingId() {
         return meetingId;
     }
@@ -21,6 +27,7 @@ public class Meeting {
         this.meetingId = meetingId;
     }
 
+    @Column(name = "subject")
     public String getSubject() {
         return subject;
     }
@@ -29,6 +36,7 @@ public class Meeting {
         this.subject = subject;
     }
 
+    @ManyToMany(mappedBy = "meetings")
     public Set<Employee> getEmployees() {
         return employees;
     }

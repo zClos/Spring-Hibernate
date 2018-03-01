@@ -1,8 +1,11 @@
 package com.pvt.pojos;
 
+import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
 
+@Entity
+@Table(name = "employee")
 public class Employee {
 
     private Integer employeeId;
@@ -18,6 +21,9 @@ public class Employee {
         meetings = new HashSet<>();
     }
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "employee_id")
     public Integer getEmployeeId() {
         return employeeId;
     }
@@ -26,6 +32,8 @@ public class Employee {
         this.employeeId = employeeId;
     }
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "department_id")
     public Department getDepartment() {
         return department;
     }
@@ -34,6 +42,7 @@ public class Employee {
         this.department = department;
     }
 
+    @Column(name = "firstname")
     public String getFirstName() {
         return firstName;
     }
@@ -42,6 +51,7 @@ public class Employee {
         this.firstName = firstName;
     }
 
+    @Column(name = "lastname")
     public String getLastName() {
         return lastName;
     }
@@ -50,6 +60,7 @@ public class Employee {
         this.lastName = lastName;
     }
 
+    @Column(name = "cellphone")
     public String getCellphone() {
         return cellphone;
     }
@@ -58,6 +69,7 @@ public class Employee {
         this.cellphone = cellphone;
     }
 
+    @Column(name = "idx")
     public Integer getIdx() {
         return idx;
     }
@@ -66,6 +78,7 @@ public class Employee {
         this.idx = idx;
     }
 
+    @OneToOne(fetch = FetchType.EAGER, mappedBy = "employee", cascade = CascadeType.ALL)
     public EmployeeDetail getEmployeeDetail() {
         return employeeDetail;
     }
@@ -74,6 +87,9 @@ public class Employee {
         this.employeeDetail = employeeDetail;
     }
 
+    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH})
+    @JoinTable(name = "employee_meeting", joinColumns = @JoinColumn(name = "employee_id"),
+            inverseJoinColumns = @JoinColumn(name = "meeting_id"))
     public Set<Meeting> getMeetings() {
         return meetings;
     }
@@ -86,7 +102,7 @@ public class Employee {
     public String toString() {
         return "Employee{" +
                 "employeeId=" + employeeId +
-//                ", departmentId=" + department +
+                ", departmentId=" + department.getDepartmentId() +
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", cellphone='" + cellphone + '\'' +
