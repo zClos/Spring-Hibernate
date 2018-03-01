@@ -24,7 +24,7 @@ public class App {
 
         EmployeeService employeeService = (EmployeeService) applicationContext.getBean("employeeService");
         Employee employee = (Employee) applicationContext.getBean("employee1");
-        employeeService.deleteEmployee(employee);
+        employeeService.deleteEmployee(null);
 
     }
 }
