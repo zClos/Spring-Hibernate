@@ -8,7 +8,7 @@ import java.util.Set;
 @Table(name = "meeting")
 public class Meeting {
 
-    private Integer meetingId;
+    private Integer id;
     private String subject;
     private Set<Employee> employees;
 
@@ -19,12 +19,12 @@ public class Meeting {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "meeting_id")
-    public Integer getMeetingId() {
-        return meetingId;
+    public Integer getId() {
+        return id;
     }
 
-    public void setMeetingId(Integer meetingId) {
-        this.meetingId = meetingId;
+    public void setId(Integer meetingId) {
+        this.id = meetingId;
     }
 
     @Column(name = "subject")
@@ -48,7 +48,7 @@ public class Meeting {
     @Override
     public String toString() {
         return "Meeting{" +
-                "meetingId=" + meetingId +
+                "meetingId=" + id +
                 ", subject='" + subject + '\'' +
                 '}';
     }

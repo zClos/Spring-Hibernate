@@ -8,7 +8,7 @@ import java.util.Set;
 @Table(name = "employee")
 public class Employee {
 
-    private Integer employeeId;
+    private Integer id;
     private Department department;
     private String firstName;
     private String lastName;
@@ -24,12 +24,12 @@ public class Employee {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "employee_id")
-    public Integer getEmployeeId() {
-        return employeeId;
+    public Integer getId() {
+        return id;
     }
 
-    public void setEmployeeId(Integer employeeId) {
-        this.employeeId = employeeId;
+    public void setId(Integer employeeId) {
+        this.id = employeeId;
     }
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -78,7 +78,7 @@ public class Employee {
         this.idx = idx;
     }
 
-    @OneToOne(fetch = FetchType.EAGER, mappedBy = "employee", cascade = CascadeType.ALL)
+    @OneToOne(fetch = FetchType.LAZY, mappedBy = "employee", cascade = CascadeType.ALL)
     public EmployeeDetail getEmployeeDetail() {
         return employeeDetail;
     }
@@ -101,8 +101,8 @@ public class Employee {
     @Override
     public String toString() {
         return "Employee{" +
-                "employeeId=" + employeeId +
-                ", departmentId=" + department.getDepartmentId() +
+                "employeeId=" + id +
+                ", departmentId=" + department.getId() +
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", cellphone='" + cellphone + '\'' +

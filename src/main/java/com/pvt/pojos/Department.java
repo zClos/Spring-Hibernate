@@ -8,8 +8,8 @@ import java.util.List;
 @Table(name = "department")
 public class Department {
 
-    private Integer departmentId;
-    private String departmentName;
+    private Integer id;
+    private String name;
     private List<Employee> employees;
 
     public Department() {
@@ -19,21 +19,21 @@ public class Department {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "department_id")
-    public Integer getDepartmentId() {
-        return departmentId;
+    public Integer getId() {
+        return id;
     }
 
-    public void setDepartmentId(Integer departmentId) {
-        this.departmentId = departmentId;
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     @Column(name = "dep_name")
-    public String getDepartmentName() {
-        return departmentName;
+    public String getName() {
+        return name;
     }
 
-    public void setDepartmentName(String departmentName) {
-        this.departmentName = departmentName;
+    public void setName(String name) {
+        this.name = name;
     }
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "department", cascade = {CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.DETACH}, orphanRemoval = true)
@@ -48,8 +48,8 @@ public class Department {
     @Override
     public String toString() {
         return "Department{" +
-                "departmentId=" + departmentId +
-                ", departmentName='" + departmentName + '\'' +
+                "id=" + id +
+                ", name='" + name + '\'' +
                 ", employees=" + employees +
                 '}';
     }

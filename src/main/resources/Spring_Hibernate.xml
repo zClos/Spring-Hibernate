@@ -47,7 +47,7 @@
 
     <!--Configure beans to fill data base-->
     <bean id="department" class="com.pvt.pojos.Department"
-          p:departmentName="someDep">
+          p:name="someDep">
         <property name="employees">
             <list value-type="com.pvt.pojos.Employee">
                 <ref bean="employee1"/>
