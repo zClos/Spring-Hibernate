@@ -33,6 +33,7 @@ public class DepartmentService {
 
     @Transactional(rollbackFor = Throwable.class, propagation = Propagation.REQUIRES_NEW)
     public void deleteDepartment(Department department) {
-        departmentDao.delete(department);
+        departmentDao.delete(Department.class, department.getDepartmentId());
+        System.out.println("The Department successfully deleted\n");
     }
 }

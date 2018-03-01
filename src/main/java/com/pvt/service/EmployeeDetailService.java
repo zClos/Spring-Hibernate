@@ -18,6 +18,6 @@ public class EmployeeDetailService {
 
     @Transactional(rollbackFor = Throwable.class, propagation = Propagation.REQUIRES_NEW)
     public void deleteEmployeeDetail(EmployeeDetail employeeDetail) {
-        employeeDetailDao.delete(employeeDetail);
+        employeeDetailDao.delete(EmployeeDetail.class, employeeDetail.getEmployeeId());
     }
 }

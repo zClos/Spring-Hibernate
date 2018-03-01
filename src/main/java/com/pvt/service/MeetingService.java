@@ -17,7 +17,6 @@ public class MeetingService {
     }
 
     @Transactional(rollbackFor = Throwable.class, propagation = Propagation.REQUIRES_NEW)
-
     public void saveMeeting(Meeting meeting) {
         meetingDao.add(meeting);
     }
@@ -29,6 +28,7 @@ public class MeetingService {
 
     @Transactional(rollbackFor = Throwable.class, propagation = Propagation.REQUIRES_NEW)
     public void deleteMeeting(Meeting meeting) {
-        meetingDao.delete(meeting);
+        meetingDao.delete(Meeting.class, meeting.getMeetingId());
+        System.out.println("The Meeting successfully deleted\n");
     }
 }

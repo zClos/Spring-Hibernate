@@ -22,14 +22,24 @@ public class EmployeeService {
         employeeDao.add(employee);
     }
 
-    @Transactional(readOnly = true)
+    @Transactional(readOnly = true, propagation = Propagation.SUPPORTS)
     public Employee getEmployee(Integer id) {
         return employeeDao.get(Employee.class, id);
+    }
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public void updateEmployee(Employee employee) {
+        Integer employeeId = employee.getEmployeeId();
+        if (employee.getEmployeeDetail().getEmployeeId() != employeeId) {
+            employee.getEmployeeDetail().setEmployeeId(employeeId);
+        }
+        employeeDao.update(employee);
     }
 
     @Transactional(rollbackFor = Throwable.class, propagation = Propagation.REQUIRES_NEW)
     public void deleteEmployee(Employee employee) {
         Assert.notNull(employee, "Employee can't be null");
-        employeeDao.delete(employee);
+        employeeDao.delete(Employee.class, employee.getEmployeeId());
+        System.out.println("The Employee successfully deleted\n");
     }
 }
