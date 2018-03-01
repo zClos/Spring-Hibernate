@@ -14,6 +14,4 @@ public interface EmployeeDao extends BaseDao<Employee> {
 
     List<Employee> getEmployeesByDepartment(String depName);
 
-    void saveEmployee(String firstName, String lastName, String depName);
-
 }

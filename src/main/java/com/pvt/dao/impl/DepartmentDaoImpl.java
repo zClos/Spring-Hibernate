@@ -2,26 +2,19 @@ package com.pvt.dao.impl;
 
 import com.pvt.dao.DepartmentDao;
 import com.pvt.pojos.Department;
-import org.hibernate.Query;
-import org.hibernate.Session;
+import org.springframework.stereotype.Repository;
 
+import javax.persistence.TypedQuery;
+
+@Repository
 public class DepartmentDaoImpl extends BaseDaoImpl<Department> implements DepartmentDao {
 
     @Override
     public Department getDepartmentByName(String name) {
-        Query query = getCurrentSession().createQuery("FROM Department where departmentName = :name");
-        query.setString("name", name);
-        return (Department) query.uniqueResult();
-    }
-
-    @Override
-    public void saveDepartment(String name) {
-        Session session = getCurrentSession();
-        session.beginTransaction();
-        Department department = new Department();
-        department.setDepartmentName(name);
-        session.saveOrUpdate(department);
-        session.getTransaction().commit();
+        TypedQuery<Department> query = entityManager.createQuery(
+                "SELECT d FROM Department d where d.departmentName LIKE :name", Department.class);
+        query.setParameter("name", name);
+        return query.getSingleResult();
     }
 
 }

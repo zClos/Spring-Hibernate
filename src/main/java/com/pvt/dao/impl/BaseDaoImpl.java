@@ -1,37 +1,35 @@
 package com.pvt.dao.impl;
 
 import com.pvt.dao.BaseDao;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import java.io.Serializable;
 
-public class BaseDaoImpl<T> extends HibernateDaoSupport implements BaseDao<T> {
+public class BaseDaoImpl<T> implements BaseDao<T> {
 
-    private SessionFactory sessionFactory;
-
-    protected Session getCurrentSession() {
-        return sessionFactory.openSession();
-    }
+    @PersistenceContext
+    protected EntityManager entityManager;
 
     @Override
     public void add(T t) {
-        getHibernateTemplate().save(t);
+        entityManager.persist(t);
     }
 
     @Override
     public void update(T t) {
-        getHibernateTemplate().update(t);
+        entityManager.merge(t);
+        entityManager.flush();
     }
 
     @Override
     public T get(Class clazz, Serializable id) {
-        return (T) getHibernateTemplate().get(clazz, id);
+        return (T) entityManager.find(clazz, id);
     }
 
     @Override
-    public void delete(T t) {
-        getHibernateTemplate().delete(t);
+    public void delete(Class clazz, Serializable id) {
+        entityManager.remove(entityManager.find(clazz, id));
+        entityManager.flush();
     }
 }

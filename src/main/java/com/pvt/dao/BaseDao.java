@@ -10,5 +10,5 @@ public interface BaseDao<T> {
 
     T get(Class clazz, Serializable id);
 
-    void delete(T t);
+    void delete(Class clazz, Serializable id);
 }
