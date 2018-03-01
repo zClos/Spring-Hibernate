@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    <class name="com.pvt.pojos.Employee" table="employee">
+        <id name="employeeId" column="employee_id" type="java.lang.Integer">
+            <generator class="identity"/>
+        </id>
+        <many-to-one name="department" class="com.pvt.pojos.Department" column="department_id" fetch="select"/>
+        <property name="firstName" column="firstname" type="java.lang.String"/>
+        <property name="lastName" column="lastname" type="java.lang.String"/>
+        <property name="cellphone" column="cellphone" type="java.lang.String"/>
+        <property name="idx" column="idx" type="java.lang.Integer"/>
+        <one-to-one name="employeeDetail" class="com.pvt.pojos.EmployeeDetail" cascade="all"/>
+        <set name="meetings" table="employee_meeting" inverse="false" fetch="select" lazy="true" cascade="all">
+            <key column="employee_id"/>
+            <many-to-many column="meeting_id" class="com.pvt.pojos.Meeting"/>
+        </set>
+    </class>
+</hibernate-mapping>
